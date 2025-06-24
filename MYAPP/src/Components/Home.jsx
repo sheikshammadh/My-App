@@ -42,12 +42,27 @@ export default function HomePage() {
   const [stories, setStories] = useState(initialStories);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
 
   const [newContent, setNewContent] = useState({
-    mediaType: "image", // 'image' or 'video'
+    mediaType: "image",
     caption: "",
-    type: "post", // or "story"
+    type: "post",
+    username: "",
+    profilePic: "",
+    mediaUrl: "",
   });
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-theme", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const navigate = useNavigate();
 
@@ -55,7 +70,6 @@ export default function HomePage() {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 50) {
-        // Generate random post or reel (image or video)
         const type = Math.random() > 0.5 ? "post" : "reel";
         const userId = Math.floor(Math.random() * 10) + 1;
         const randomId = Math.floor(Math.random() * 1000);
@@ -153,7 +167,6 @@ export default function HomePage() {
 
   return (
     <div className="app-container">
-      {/* Header with search */}
       <header className="header">
         <h1 className="app-title">MyGram</h1>
         <div className="search-wrapper">
@@ -175,9 +188,16 @@ export default function HomePage() {
         >
           ＋
         </button>
+        <button
+          className="theme-toggle-btn"
+          onClick={toggleTheme}
+          style={{ fontSize: "20px", background: "none", border: "none", cursor: "pointer", marginLeft: "10px" }}
+          aria-label="Toggle Theme"
+        >
+          {theme === "dark" ? "🌞" : "🌙"}
+        </button>
       </header>
 
-      {/* Search results */}
       {searchTerm && (
         <div className="search-results">
           {filteredUsers.length === 0 ? (
@@ -196,186 +216,88 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Add post/story form */}
       {showAddForm && (
-        <section
-          className="add-content-section"
-          style={{
-            padding: "1rem",
-            border: "1px solid #ccc",
-            margin: "1rem 0",
-            borderRadius: "8px",
-            backgroundColor: "#fafafa",
-          }}
-        >
+        <section className="add-content-section">
           <h2>Add New Post or Story</h2>
           <form onSubmit={handleAddContent}>
             <label>
-              Username: <br />
-              <input
-                type="text"
-                name="username"
-                value={newContent.username}
-                onChange={handleInputChange}
-                placeholder="Your username"
-                required
-              />
+              Username:<br />
+              <input type="text" name="username" value={newContent.username} onChange={handleInputChange} required />
             </label>
-            <br />
             <label>
-              Profile Picture URL: <br />
-              <input
-                type="text"
-                name="profilePic"
-                value={newContent.profilePic}
-                onChange={handleInputChange}
-                placeholder="Profile pic URL"
-                required
-              />
+              Profile Picture URL:<br />
+              <input type="text" name="profilePic" value={newContent.profilePic} onChange={handleInputChange} required />
             </label>
-            <br />
             <label>
-              Media URL (image or video): <br />
-              <input
-                type="text"
-                name="mediaUrl"
-                value={newContent.mediaUrl}
-                onChange={handleInputChange}
-                placeholder="Media URL"
-                required
-              />
+              Media URL:<br />
+              <input type="text" name="mediaUrl" value={newContent.mediaUrl} onChange={handleInputChange} required />
             </label>
-            <br />
             <label>
-              Media Type: <br />
-              <select
-                name="mediaType"
-                value={newContent.mediaType}
-                onChange={handleInputChange}
-              >
+              Media Type:<br />
+              <select name="mediaType" value={newContent.mediaType} onChange={handleInputChange}>
                 <option value="image">Image</option>
                 <option value="video">Video</option>
               </select>
             </label>
-            <br />
-            {newContent.type === "post" && (
-              <>
-                <label>
-                  Caption: <br />
-                  <input
-                    type="text"
-                    name="caption"
-                    value={newContent.caption}
-                    onChange={handleInputChange}
-                    placeholder="Post caption"
-                  />
-                </label>
-                <br />
-              </>
-            )}
             <label>
-              Type: <br />
+              Caption:<br />
+              <input type="text" name="caption" value={newContent.caption} onChange={handleInputChange} />
+            </label>
+            <label>
+              Type:<br />
               <select name="type" value={newContent.type} onChange={handleInputChange}>
                 <option value="post">Post</option>
                 <option value="story">Story</option>
               </select>
             </label>
-            <br />
-            <button type="submit" style={{ marginTop: "8px" }}>
-              Add
-            </button>
+            <button type="submit">Add</button>
           </form>
         </section>
       )}
 
-      {/* Stories */}
       <section className="stories-section">
         <div className="stories-row">
           {stories.map((name, i) => (
-            <div
-              key={i}
-              className="story-card"
-              onClick={() => goToProfile(name)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={`https://i.pravatar.cc/60?u=${name}`}
-                alt={name}
-                className="story-img"
-              />
+            <div key={i} className="story-card" onClick={() => goToProfile(name)}>
+              <img src={`https://i.pravatar.cc/60?u=${name}`} alt={name} className="story-img" />
               <small>{name}</small>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Feed */}
       <section className="feed-section">
         {posts.map((post) => (
           <div key={post.id} className="post-card">
-            <div
-              className="post-header"
-              onClick={() => goToProfile(post.username)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={post.profilePic}
-                alt={post.username}
-                className="post-profile-pic"
-              />
+            <div className="post-header" onClick={() => goToProfile(post.username)}>
+              <img src={post.profilePic} alt={post.username} className="post-profile-pic" />
               <strong>{post.username}</strong>
             </div>
-
-            {/* Show image or video based on mediaType */}
             {post.mediaType === "image" ? (
-              <img
-                src={post.mediaUrl}
-                alt={post.type}
-                className={post.type === "reel" ? "reel-image" : "post-image"}
-              />
+              <img src={post.mediaUrl} alt={post.type} className="post-image" />
             ) : (
-              <video
-                src={post.mediaUrl}
-                controls
-                className={post.type === "reel" ? "reel-image" : "post-image"}
-                style={{ maxWidth: "100%" }}
-              />
+              <video src={post.mediaUrl} controls className="post-image" />
             )}
-
-            {post.type === "post" ? (
-              <>
-                <div className="post-actions">
-                  <button
-                    className="action-btn"
-                    onClick={() => toggleLike(post.id)}
-                    aria-label="like button"
-                    style={{ fontSize: "20px" }}
-                  >
-                    {post.likedByUser ? "❤️" : "🤍"}
-                  </button>
-                  <span>{post.likes}</span>
-                  <button className="action-btn">💬</button>
-                  <button className="action-btn">📤</button>
-                  <button className="action-btn save-btn">🔖</button>
-                </div>
-                <p className="post-caption">
-                  <strong>{post.username}</strong> {post.caption}
-                </p>
-              </>
-            ) : (
-              <p className="reel-caption">
-                🎬 <strong>{post.username}</strong> shared a Reel!
-              </p>
-            )}
+            <div className="post-actions">
+              <button className="action-btn" onClick={() => toggleLike(post.id)}>
+                {post.likedByUser ? "❤️" : "♥️"}
+              </button>
+              <span>{post.likes}</span>
+              <button className="action-btn">💬</button>
+              <button className="action-btn">📤</button>
+              <button className="action-btn save-btn">🔖</button>
+            </div>
+            <p className="post-caption">
+              <strong>{post.username}</strong> {post.caption}
+            </p>
           </div>
         ))}
       </section>
 
-      {/* Bottom Navigation */}
       <nav className="bottom-nav">
         <button className="nav-btn">🏠</button>
         <button className="nav-btn">🔍</button>
-        <button className="nav-btn">🎬</button>
+        <button className="nav-btn">🎮</button>
         <button className="nav-btn">🔔</button>
         <button className="nav-btn">👤</button>
       </nav>
