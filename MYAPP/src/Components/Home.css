@@ -66,7 +66,7 @@ body.dark-theme .header {
 body.dark-theme .search-input {
   background-color: #2b2b2b;
   color: #fff;
-  border: 1px solid #444;
+  border-color: #444;
 }
 
 .add-post-btn {
@@ -80,26 +80,6 @@ body.dark-theme .search-input {
 
 .add-post-btn:hover {
   transform: scale(1.2);
-}
-
-/* Search Results */
-.search-results {
-  max-width: 400px;
-  margin: 10px auto;
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-body.dark-theme .search-results {
-  background: #1e1e1e;
-  border-color: #333;
-}
-
-.search-user-link {
-  color: #007aff;
-  text-decoration: none;
 }
 
 /* Stories */
@@ -172,8 +152,7 @@ body.dark-theme .post-card {
   border: 2px solid #ff0044;
 }
 
-.post-image,
-.reel-image {
+.post-image {
   width: 100%;
   max-height: 400px;
   object-fit: cover;
@@ -204,15 +183,13 @@ body.dark-theme .post-card {
   margin-left: auto;
 }
 
-.post-caption,
-.reel-caption {
+.post-caption {
   padding: 0 10px 10px;
   font-size: 14px;
   color: #333;
 }
 
-body.dark-theme .post-caption,
-body.dark-theme .reel-caption {
+body.dark-theme .post-caption {
   color: #ccc;
 }
 
@@ -222,7 +199,7 @@ body.dark-theme .reel-caption {
   justify-content: space-around;
   padding: 12px;
   border-top: 1px solid #ddd;
-  background-color: #ffffff;
+  background-color: #fff;
   position: sticky;
   bottom: 0;
 }
@@ -263,7 +240,7 @@ body.dark-theme .add-content-section select,
 body.dark-theme .add-content-section button {
   background-color: #2a2a2a;
   color: #fff;
-  border: 1px solid #555;
+  border-color: #555;
 }
 
 /* Comments */
@@ -300,3 +277,4 @@ body.dark-theme .add-content-section button {
   font-style: italic;
   color: #777;
 }
+

@@ -215,7 +215,6 @@ export default function HomePage() {
           )}
         </div>
       )}
-
       {showAddForm && (
         <section className="add-content-section">
           <h2>Add New Post or Story</h2>
